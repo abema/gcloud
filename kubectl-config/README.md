@@ -3,7 +3,7 @@
 The GitHub Actions for [Google Cloud Platform](https://cloud.google.com/) and wraps the [gcloud SDK](https://cloud.google.com/sdk/) for setting kubectl configs. This is a thin wrapper around the `gcloud config` command, setting your project and kubernetes credential using [Environment variables](https://developer.github.com/actions/creating-github-actions/accessing-the-runtime-environment/#environment-variables).
 
 ## Usage
-An example workflow to list clusters on Google Cloud Platform:
+An example workflow to list zone clusters on Google Cloud Platform:
 
 ```
 workflow "Run gcloud command" {
@@ -20,7 +20,31 @@ action "Set kubectl config" {
   needs = ["GCP Authenticate"]
   uses = "actions/gcloud/kubectl-config@master"
   env = {
-    GCLOUD_ZONE = "your-gcp-region"
+    GCLOUD_ZONE = "your-gcp-zone"
+    GCLOUD_PROJCT = "your-gcp-project"
+    K8S_CLUSTER_NAME = "your-gke-cluster"
+  }
+}
+```
+
+An example workflow to list region clusters on Google Cloud Platform:
+
+```
+workflow "Run gcloud command" {
+  on = "push"
+  resolves = "Load credentials"
+}
+
+action "GCP Authenticate" {
+  uses = "actions/gcloud/auth@master"
+  secrets = ["GCLOUD_AUTH"]
+}
+
+action "Set kubectl config" {
+  needs = ["GCP Authenticate"]
+  uses = "actions/gcloud/kubectl-config@master"
+  env = {
+    GCLOUD_REGION = "your-gcp-region"
     GCLOUD_PROJCT = "your-gcp-project"
     K8S_CLUSTER_NAME = "your-gke-cluster"
   }
